@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Baca Al-Qur'an</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&display=swap" rel="stylesheet" />
+</head>
+<body>
+  
+  <header class="navbar">
+    <h1>📖 Baca Al-Qur'an</h1>
+<div class="hamburger" onclick="toggleMenu()">☰</div>
+</header>
+<nav class="nav-menu" id="navMenu">
+  <a href="index.html" class="active">🏠 Beranda</a>
+    <a href="quran.html">📖 Qur'an</a>
+    <a href="doa.html">🙏 Input Doa</a>
+    <a href="daftar-doa.html">📚 Daftar Doa</a>
+    <a href="hadist.html">📜 Input Hadist</a>
+    <a href="daftar-hadist.html">📚 Daftar Hadist</a>
+    <a href="sholat.html">🕓 Jadwal Sholat</a>
+    <a href="artikel.html">✍️ Input Artikel</a>
+</nav>
+<p>Pilih surah untuk ditampilkan</p>
+</nav>  
+<main class="content">
+    <select id="surahSelect" class="dropdown"></select>
+    <div id="ayatContainer" class="ayat-container"></div>
+  </main>  <footer class="footer">
+    <a href="index.html">← Kembali ke Beranda</a> |
+    <a href="tanda-baca.html">⚙️ Atur Tanda Baca Tajwid</a>
+  </footer>  <script>
+    const select = document.getElementById("surahSelect");
+    const ayatContainer = document.getElementById("ayatContainer");
+
+    async function loadSurah() {
+      try {
+        const res = await fetch("https://api.quran.gading.dev/surah");
+        const data = await res.json();
+        data.data.forEach(surah => {
+          const opt = document.createElement("option");
+          opt.value = surah.number;
+          opt.textContent = `${surah.number}. ${surah.name.transliteration.id}`;
+          select.appendChild(opt);
+        });
+      } catch (err) {
+        console.error("Gagal memuat surah:", err);
+      }
+    }
+
+    async function tampilkanAyat(nomor) {
+      ayatContainer.innerHTML = "<p>⏳ Memuat ayat...</p>";
+      try {
+        const res = await fetch(`https://api.quran.gading.dev/surah/${nomor}`);
+        const data = await res.json();
+        const pengaturan = JSON.parse(localStorage.getItem("pengaturanTajwid")) || {};
+
+        ayatContainer.innerHTML = `
+          <h2>${data.data.name.transliteration.id}</h2>
+          <p style="color:#555; font-style:italic;">${data.data.name.long}</p>
+        `;
+
+        data.data.verses.forEach(ayat => {
+          let arabText = ayat.text.arab;
+
+          if (pengaturan.warnaTajwid) {
+            if (pengaturan.ghunnah) arabText = arabText.replace(/نّ|مّ/g, '<span class="ghunnah">$&</span>');
+            if (pengaturan.idgham) arabText = arabText
+              .replace(/نْ ?[ومنيي]/g, m => `<span class="idgham">${m}</span>`)
+              .replace(/[ًٌٍ][ ]?[ومنيي]/g, m => `<span class="idgham">${m}</span>`);
+            if (pengaturan.idghamBila || pengaturan["idgham-bila"]) arabText = arabText
+              .replace(/نْ ?[رل]/g, m => `<span class="idgham-bila">${m}</span>`)
+              .replace(/[ًٌٍ][ ]?[رل]/g, m => `<span class="idgham-bila">${m}</span>`);
+            if (pengaturan.idghamMitslain || pengaturan["idgham-mitslain"]) arabText = arabText.replace(/مْ ?م/g, m => `<span class="idgham-mitslain">${m}</span>`);
+            if (pengaturan.ikhfa) arabText = arabText
+              .replace(/نْ ?[سشصضطظثذز]/g, m => `<span class="ikhfa">${m}</span>`)
+              .replace(/[ًٌٍ][ ]?[سشصضطظثذز]/g, m => `<span class="ikhfa">${m}</span>`);
+            if (pengaturan["ikhfa-syafawi"]) arabText = arabText.replace(/مْ ?ب/g, m => `<span class="ikhfa-syafawi">${m}</span>`);
+            if (pengaturan.iqlab) arabText = arabText
+              .replace(/نْ ?ب/g, m => `<span class="iqlab">${m}</span>`)
+              .replace(/[ًٌٍ][ ]?ب/g, m => `<span class="iqlab">${m}</span>`);
+            if (pengaturan.idzhar) arabText = arabText.replace(/دُنْيَا/g, '<span class="idzhar">دُنْيَا</span>');
+            if (pengaturan.qalqalah) arabText = arabText.replace(/[قْطْبْجْدْ]/g, m => `<span class="qalqalah">${m}</span>`);
+          }
+
+          const ornamen = document.createElement("span");
+          ornamen.className = "ornamen-ayat";
+          ornamen.textContent = ayat.number.inSurah;
+
+          const ayatDiv = document.createElement("div");
+          ayatDiv.className = "ayat-box";
+
+          const arab = document.createElement("p");
+          arab.className = "arab";
+          arab.innerHTML = arabText;
+
+          const indo = document.createElement("p");
+          indo.className = "terjemahan";
+          indo.textContent = ayat.translation.id;
+
+          ayatContainer.appendChild(ornamen);
+          ayatDiv.appendChild(arab);
+          ayatDiv.appendChild(indo);
+          ayatContainer.appendChild(ayatDiv);
+        });
+
+      } catch (err) {
+        ayatContainer.innerHTML = `<p style="color:red;">⚠️ Gagal memuat ayat. Periksa koneksi internet atau coba lagi nanti.</p>`;
+        console.error(err);
+      }
+    }
+
+    select.addEventListener("change", () => tampilkanAyat(select.value));
+    document.addEventListener('DOMContentLoaded', () => {
+  loadSurah();
+});
+    function toggleMenu() {
+  document.getElementById("navMenu").classList.toggle("show");
+}
+  </script>
+<script src="script.js"></script>
+  </body>
+</html>

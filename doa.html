@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kumpulan Doa</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-brand">Kumpulan Doa</div>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <nav class="nav-menu" id="navMenu">
+    <a href="index.html" class="active">🏠 Beranda</a>
+    <a href="quran.html">📖 Qur'an</a>
+    <a href="doa.html">🙏 Input Doa</a>
+    <a href="daftar-doa.html">📚 Daftar Doa</a>
+    <a href="hadist.html">📜 Input Hadist</a>
+    <a href="daftar-hadist.html">📚 Daftar Hadist</a>
+    <a href="sholat.html">🕓 Jadwal Sholat</a>
+    <a href="artikel.html">✍️ Input Artikel</a>
+    </nav>
+  </header>
+
+  <main class="content">
+    <h3>📝 Tambah atau Edit Doa</h3>
+    <div style="max-width: 100%; display: flex; flex-direction: column; gap: 10px;">
+      <input type="text" id="judulDoa" placeholder="Judul Doa" class="input-kota" />
+      <textarea id="isiDoa" placeholder="Tulis isi doa di sini..." rows="6" class="kategori"></textarea>
+      <select id="kategori" class="select-kategori">
+        <option value="">-- Pilih Kategori --</option>
+        <option value="Doa Sehari-hari">Doa Sehari-hari</option>
+        <option value="Dzikir Pagi">Dzikir Pagi</option>
+        <option value="Dzikir Petang">Dzikir Petang</option>
+        <option value="Doa Lain-lain">Doa Lain-lain</option>
+      </select>
+      <button onclick="simpanDoa()" class="button-utama">💾 Simpan Doa</button>
+    </div>
+
+    <h3>🔍 Cari Berdasarkan Kategori / Judul</h3>
+    <input type="text" id="filterDoa" placeholder="Contoh: pagi" class="kategori" oninput="tampilkanDoa()" />
+
+    <div id="daftarDoa" class="grid-thumbnail" style="margin-top: 20px;"></div>
+  </main>
+
+  <footer class="footer">
+    <a href="index.html">← Kembali ke Beranda</a>
+  </footer>
+
+  <script>
+    let doaEditIndex = null;
+
+    function simpanDoa() {
+      const judul = document.getElementById("judulDoa").value.trim();
+      const isi = document.getElementById("isiDoa").value.trim();
+      const kategori = document.getElementById("kategori").value.trim();
+
+      if (!judul || !isi || !kategori) {
+        alert("Semua kolom harus diisi.");
+        return;
+      }
+
+      const data = JSON.parse(localStorage.getItem("doa") || "[]");
+
+      if (doaEditIndex !== null) {
+        data[doaEditIndex] = { judul, isi, kategori };
+        doaEditIndex = null;
+      } else {
+        data.push({ judul, isi, kategori });
+      }
+
+      localStorage.setItem("doa", JSON.stringify(data));
+
+      // Reset form
+      document.getElementById("judulDoa").value = "";
+      document.getElementById("isiDoa").value = "";
+      document.getElementById("kategori").value = "";
+
+      tampilkanDoa();
+    }
+
+    function tampilkanDoa() {
+      const filter = document.getElementById("filterDoa").value.toLowerCase();
+      const data = JSON.parse(localStorage.getItem("doa") || "[]");
+      const daftar = document.getElementById("daftarDoa");
+
+      daftar.innerHTML = "";
+
+      const hasil = data.filter(d =>
+        d.kategori.toLowerCase().includes(filter) || d.judul.toLowerCase().includes(filter)
+      );
+
+      if (hasil.length === 0) {
+        daftar.innerHTML = "<p>Tidak ada doa ditemukan.</p>";
+        return;
+      }
+
+      hasil.forEach((d, i) => {
+        const card = document.createElement("div");
+        card.className = "thumbnail-card";
+        card.innerHTML = `
+          <h4>${d.judul}</h4>
+          <p><strong>Kategori:</strong> ${d.kategori}</p>
+          <p>${d.isi.substring(0, 60)}...</p>
+          <button onclick="editDoa(${i})">✏️ Edit</button>
+          <button onclick="hapusDoa(${i})">🗑️ Hapus</button>
+        `;
+        daftar.appendChild(card);
+      });
+    }
+
+    function editDoa(index) {
+      const data = JSON.parse(localStorage.getItem("doa") || "[]");
+      const doa = data[index];
+      document.getElementById("judulDoa").value = doa.judul;
+      document.getElementById("isiDoa").value = doa.isi;
+      document.getElementById("kategori").value = doa.kategori;
+      doaEditIndex = index;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function hapusDoa(index) {
+      if (!confirm("Yakin ingin menghapus doa ini?")) return;
+      const data = JSON.parse(localStorage.getItem("doa") || "[]");
+      data.splice(index, 1);
+      localStorage.setItem("doa", JSON.stringify(data));
+      tampilkanDoa();
+    }
+
+    document.addEventListener("DOMContentLoaded", tampilkanDoa);
+
+    function toggleMenu() {
+      document.getElementById("navMenu").classList.toggle("show");
+    }
+  </script>
+</body>
+</html>

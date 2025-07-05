@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Beranda Islami</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ========== NAVBAR ========== -->
+  <div class="navbar">
+    <div class="logo">🌙 Menu Islami</div>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+  </div>
+
+  <!-- ========== NAV MENU ========== -->
+  <div id="navMenu" class="nav-menu">
+    <a href="index.html" class="active">🏠 Beranda</a>
+    <a href="quran.html">📖 Qur'an</a>
+    <a href="doa.html">🙏 Input Doa</a>
+    <a href="daftar-doa.html">📚 Daftar Doa</a>
+    <a href="hadist.html">📜 Input Hadist</a>
+    <a href="daftar-hadist.html">📚 Daftar Hadist</a>
+    <a href="sholat.html">🕓 Jadwal Sholat</a>
+    <a href="artikel.html">✍️ Input Artikel</a>
+  </div>
+
+  <!-- ========== KONTEN ARTIKEL ========== -->
+  <div class="content">
+    <h2>📚 Artikel Islami</h2>
+    <div id="daftarArtikel" class="grid-thumbnail"></div>
+  </div>
+
+  <!-- ========== MODAL ARTIKEL ========== -->
+  <div id="modalArtikel" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="tutupModalArtikel()">&times;</span>
+    <img id="modalGambar" src="" alt="Gambar Artikel">
+    <h3 id="modalJudul"></h3>
+    <p id="modalIsi"></p>
+  </div>
+  </div>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    &copy; 2025 Aplikasi Islami Offline - Reztu Try Maulana Akbar
+  </footer>
+
+  <!-- ========== SCRIPT ========== -->
+  <script src="script.js"></script>
+</body>
+</html>

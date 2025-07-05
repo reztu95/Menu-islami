@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Hadist</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-brand">📖 Kumpulan Hadist</div>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <nav class="nav-menu" id="navMenu">
+    <a href="index.html" class="active">🏠 Beranda</a>
+    <a href="quran.html">📖 Qur'an</a>
+    <a href="doa.html">🙏 Input Doa</a>
+    <a href="daftar-doa.html">📚 Daftar Doa</a>
+    <a href="hadist.html">📜 Input Hadist</a>
+    <a href="daftar-hadist.html">📚 Daftar Hadist</a>
+    <a href="sholat.html">🕓 Jadwal Sholat</a>
+    <a href="artikel.html">✍️ Input Artikel</a>
+    </nav>
+  </header>
+
+  <main class="content">
+    <h3>🔍 Cari Berdasarkan Kategori</h3>
+    <input type="text" id="inputKategoriCari" class="input-kategori" placeholder="Misal: adab, aqidah, ibadah..." oninput="filterKategoriHadist(this.value)">
+
+    <div id="daftarHadist" class="grid-thumbnail"></div>
+  </main>
+
+  <footer class="footer">
+    <a href="hadist.html">← Kembali ke Tambah Hadist</a>
+  </footer>
+
+  <div id="modalHadist" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="tutupModalHadist()">&times;</span>
+      <h3 id="modalJudulHadist">Judul Hadist</h3>
+      <p id="modalIsiHadist">Isi hadist tampil di sini.</p>
+      <small id="modalKategoriHadist">Kategori: </small>
+    </div>
+  </div>
+
+  <script>
+    function tampilkanDaftarHadist() {
+      const data = JSON.parse(localStorage.getItem("hadist") || "[]");
+      const container = document.getElementById("daftarHadist");
+      container.innerHTML = "";
+
+      if (data.length === 0) {
+        container.innerHTML = "<p>Tidak ada hadist yang tersimpan.</p>";
+        return;
+      }
+
+      data.forEach((h, i) => {
+        const card = document.createElement("div");
+        card.className = "thumbnail-card";
+        card.onclick = () => bukaModalHadist(h);
+        card.innerHTML = `
+          <h4>${h.judul}</h4>
+          <p>${h.isi.substring(0, 100)}...</p>
+          <small>Kategori: ${h.kategori}</small>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function bukaModalHadist(h) {
+      document.getElementById("modalJudulHadist").innerText = h.judul;
+      document.getElementById("modalIsiHadist").innerHTML = h.isi.replace(/\n/g, "<br>");
+      document.getElementById("modalKategoriHadist").innerText = "Kategori: " + h.kategori;
+      document.getElementById("modalHadist").style.display = "block";
+    }
+
+    function tutupModalHadist() {
+      document.getElementById("modalHadist").style.display = "none";
+    }
+
+    function filterKategoriHadist(kategori) {
+      const data = JSON.parse(localStorage.getItem("hadist") || "[]");
+      const filtered = data.filter(h => h.kategori.toLowerCase().includes(kategori.toLowerCase()));
+      const container = document.getElementById("daftarHadist");
+      container.innerHTML = "";
+
+      if (filtered.length === 0) {
+        container.innerHTML = "<p>Data tidak ditemukan untuk kategori tersebut.</p>";
+        return;
+      }
+
+      filtered.forEach((h) => {
+        const card = document.createElement("div");
+        card.className = "thumbnail-card";
+        card.onclick = () => bukaModalHadist(h);
+        card.innerHTML = `
+          <h4>${h.judul}</h4>
+          <p>${h.isi.substring(0, 100)}...</p>
+          <small>Kategori: ${h.kategori}</small>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function toggleMenu() {
+      document.getElementById("navMenu").classList.toggle("show");
+    }
+
+    document.addEventListener("DOMContentLoaded", tampilkanDaftarHadist);
+  </script>
+</body>
+</html>

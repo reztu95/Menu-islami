@@ -1,0 +1,477 @@
+/* ====== IMPORT GOOGLE FONT ====== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+/* ====== RESET & DASAR ====== */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f9f9f9;
+  margin: 0;
+  padding: 0;
+  color: #333;
+  font-size: 17px;
+}
+
+/* ====== HEADER & NAVIGATION ====== */
+.navbar {
+  background-color: #198754;
+  color: white;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.navbar-brand {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.hamburger {
+  font-size: 20px;
+  cursor: pointer;
+  display: block;
+}
+
+.nav-menu {
+  display: none;
+  flex-direction: column;
+  background-color: #198754;
+  width: 100%;
+  position: absolute;
+  top: 48px;
+  left: 0;
+  z-index: 999;
+  transition: all 0.3s ease-in-out;
+}
+
+.nav-menu.show {
+  display: flex;
+}
+
+.nav-menu a {
+  padding: 12px;
+  text-decoration: none;
+  color: white;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  background-color: #157347;
+  font-size: 15px;
+}
+
+.nav-menu a:hover {
+  background-color: #145c42;
+}
+
+.nav-menu a.active {
+  background: #0f5132;
+}
+
+/* LAYOUT */
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  padding-bottom: 120px !important;
+}
+
+/* FORM ARTIKEL */
+.form-section h2 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+input[type="text"],
+textarea,
+input[type="file"] {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  font-size: 17px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+button {
+  padding: 12px 18px;
+  font-size: 17px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: #198754;
+  color: white;
+}
+
+button:hover {
+  background: #145c42;
+}
+
+/* THUMBNAIL ARTIKEL */
+.grid-thumbnail {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.thumbnail-card {
+  background: white;
+  padding: 14px;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  width: 100%;
+  height: auto;
+  max-height: none !important;
+  box-sizing: border-box;
+}
+
+.thumbnail-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.thumbnail-card h4 {
+  margin: 0 0 6px;
+  font-size: 19px;
+  color: #2E7D32;
+}
+
+.thumbnail-card p {
+  font-size: 16px;
+  flex-grow: 1;
+}
+
+.thumbnail-card button {
+  background-color: #2E7D32;
+  color: white;
+  font-size: 15px;
+  padding: 8px 12px;
+  margin-top: 6px;
+  width: 100%;
+  border: none;
+  border-radius: 6px;
+}
+
+.thumbnail-card button:hover {
+  background-color: #1e5726;
+}
+
+/* MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 10px;
+  padding: 24px;
+  max-width: 700px;
+  width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+  position: relative;
+  font-size: 17px;
+}
+
+.modal-content img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.modal-content h3 {
+  font-size: 22px;
+  margin-top: 0;
+  color: #2E7D32;
+}
+
+.modal-content p {
+  font-size: 17px;
+}
+
+.modal .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 26px;
+  font-weight: bold;
+  color: #888;
+  cursor: pointer;
+}
+
+.modal .close:hover {
+  color: black;
+}
+
+/* ====== HALAMAN QURAN ====== */
+.content {
+  padding: 20px;
+  padding-bottom: 40px;
+  max-width: 800px;
+  margin: auto;
+}
+
+.dropdown {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  box-sizing: border-box;
+}
+
+.ayat-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.ayat-box {
+  background: white;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  border: 1px solid #ddd;
+}
+
+.arab {
+  font-family: 'Scheherazade New', serif;
+  font-size: 30px;
+  text-align: right;
+  color: #2E7D32;
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+.terjemahan {
+  font-size: 16px;
+  color: #444;
+  text-align: left;
+  margin-top: 5px;
+}
+
+.ornamen-ayat {
+  display: inline-block;
+  background-color: #198754;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 50%;
+  align-self: flex-end;
+  margin-left: auto;
+  margin-bottom: -10px;
+  margin-right: 6px;
+}
+
+/* ====== Warna Tajwid ====== */
+.ghunnah { color: #D63384; }
+.idgham { color: #0D6EFD; }
+.idgham-bila { color: #6610F2; }
+.idgham-mitslain { color: #FD7E14; }
+.ikhfa { color: #FFC107; }
+.ikhfa-syafawi { color: #20C997; }
+.iqlab { color: #DC3545; }
+.idzhar { color: #0DCAF0; }
+.qalqalah { color: #6C757D; }
+
+/* ====== Kategori Doa ====== */
+.kategori-list {
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kategori-list select {
+  padding: 12px;
+  font-size: 17px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: border 0.2s ease;
+  max-width: 300px;
+}
+
+.kategori-list select:focus {
+  outline: none;
+  border-color: #198754;
+}
+
+/* ====== Area Konten Dinamis ====== */
+#isiHadist,
+#isiDoa,
+#isiArtikel {
+  height: 400px;
+}
+
+/* ====== RESPONSIVE DESIGN ====== */
+@media (min-width: 768px) {
+  .hamburger {
+    display: none;
+  }
+
+  .nav-menu {
+    display: flex !important;
+    flex-direction: row;
+    position: static;
+    width: auto;
+    background: none;
+  }
+
+  .nav-menu a {
+    padding: 0 10px;
+    border: none;
+    background: none;
+  }
+
+  .nav-menu a:hover {
+    background: none;
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-menu a {
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  .navbar h1 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand {
+    font-size: 14px;
+  }
+
+  .form-section h2,
+  h2 {
+    font-size: 18px;
+  }
+
+  input[type="text"],
+  textarea,
+  input[type="file"],
+  button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .container {
+    padding: 12px 10px;
+    padding-bottom: 100px;
+    max-width: 100%;
+  }
+
+  .grid-thumbnail {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .thumbnail-card {
+    max-width: 100%;
+    padding: 10px;
+  }
+
+  .thumbnail-card img {
+    height: 80px;
+    margin-bottom: 6px;
+  }
+
+  .thumbnail-card h4 {
+    font-size: 16px;
+  }
+
+  .thumbnail-card p {
+    font-size: 14px;
+    margin-bottom: 4px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .thumbnail-card button {
+    font-size: 13px;
+    padding: 6px;
+  }
+
+  .modal-content {
+    max-width: 95vw;
+    max-height: 90vh;
+    padding: 20px;
+    font-size: 16px;
+  }
+
+  .modal-content img {
+    max-height: 180px;
+    object-fit: cover;
+  }
+
+  .arab {
+    font-size: 24px;
+  }
+
+  .terjemahan {
+    font-size: 14px;
+  }
+
+  .dropdown {
+    font-size: 14px;
+  }
+
+  .ornamen-ayat {
+    font-size: 12px;
+    padding: 3px 6px;
+  }
+
+  .hamburger {
+    font-size: 24px;
+  }
+
+  .nav-menu a {
+    padding: 14px 18px;
+    font-size: 16px;
+  }
+}
+
+.select-kategori {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #fff;
+  color: #333;
+  outline: none;
+  transition: border 0.3s ease;
+}
+
+.select-kategori:focus {
+  border-color: #007bff;
+}

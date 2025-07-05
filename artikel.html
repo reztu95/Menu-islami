@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artikel</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-brand">Manajemen Artikel</div>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <nav class="nav-menu" id="navMenu">
+      <a href="index.html" class="active">🏠 Beranda</a>
+    <a href="quran.html">📖 Qur'an</a>
+    <a href="doa.html">🙏 Input Doa</a>
+    <a href="daftar-doa.html">📚 Daftar Doa</a>
+    <a href="hadist.html">📜 Input Hadist</a>
+    <a href="daftar-hadist.html">📚 Daftar Hadist</a>
+    <a href="sholat.html">🕓 Jadwal Sholat</a>
+    <a href="artikel.html">✍️ Input Artikel</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="form-section">
+      <h2>Tambah / Edit Artikel</h2>
+      <input type="text" id="judulArtikel" placeholder="Judul Artikel" required />
+      <textarea id="isiArtikel" rows="6" placeholder="Isi Artikel" required></textarea>
+      <input type="file" id="gambarArtikel" accept="image/*" />
+      <button onclick="simpanArtikel()">💾 Simpan</button>
+    </section>
+
+    <hr>
+
+    <section>
+      <h2>Daftar Artikel</h2>
+      <div id="daftarArtikel" class="grid-thumbnail"></div>
+    </section>
+  </main>
+
+  <!-- MODAL ARTIKEL -->
+  <div id="modalArtikel" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="tutupModalArtikel()">&times;</span>
+      <img id="modalGambar" src="" alt="Gambar Artikel" style="width:100%; max-height:200px; object-fit:cover; border-radius:8px; margin-bottom:10px;">
+      <h3 id="modalJudul"></h3>
+      <p id="modalIsi"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

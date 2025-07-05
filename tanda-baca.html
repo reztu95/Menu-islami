@@ -1,0 +1,55 @@
+<!DOCTYPE html><html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pengaturan Tanda Baca Tajwid</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <h1>⚙️ Pengaturan Tanda Baca Tajwid</h1>
+    <p>Aktifkan jenis bacaan tajwid yang ingin ditampilkan dengan warna di tampilan Al-Qur'an.</p>
+  </header>  <main class="content">
+    <form id="formPengaturan">
+      <label><input type="checkbox" name="warnaTajwid"> Aktifkan warna tajwid</label>
+      <label><input type="checkbox" name="ghunnah"> Ghunnah <span class="ghunnah">(نّ / مّ)</span></label>
+      <label><input type="checkbox" name="idgham"> Idgham Bighunnah <span class="idgham">(نْ + و م ن ي)</span></label>
+      <label><input type="checkbox" name="idgham-bila"> Idgham Bila Ghunnah <span class="idgham-bila">(نْ + ل ر)</span></label>
+      <label><input type="checkbox" name="idgham-mitslain"> Idgham Mitslain <span class="idgham-mitslain">(مْ + م)</span></label>
+      <label><input type="checkbox" name="ikhfa"> Ikhfa <span class="ikhfa">(نْ + س ش ص)</span></label>
+      <label><input type="checkbox" name="ikhfa-syafawi"> Ikhfa Syafawi <span class="ikhfa-syafawi">(مْ + ب)</span></label>
+      <label><input type="checkbox" name="iqlab"> Iqlab <span class="iqlab">(نْ + ب)</span></label>
+      <label><input type="checkbox" name="idzhar"> Idzhar Wajib <span class="idzhar">(دُنْيَا)</span></label>
+      <label><input type="checkbox" name="qalqalah"> Qalqalah <span class="qalqalah">(قْ طْ بْ جْ دْ)</span></label>
+      <br><br>
+      <button class="button-utama" type="submit">💾 Simpan Pengaturan</button>
+    </form><div class="preview">
+  <h3>Contoh Warna Tajwid:</h3>
+  <p class="arab">
+    وَمِنْ <span class="idgham">هُمْ</span> <span class="ghunnah">يُؤْمِنُ</span> <span class="ikhfa">نْشَاءُ</span>
+    <span class="iqlab">نْبَ</span>تَ <span class="idzhar">دُنْيَا</span> <span class="idgham-bila">نْلَوْمٌ</span>
+    <span class="idgham-mitslain">مْمَ</span> <span class="ikhfa-syafawi">مْبَاسِطِ</span> <span class="qalqalah">يَقْتُلُ</span>
+  </p>
+</div>
+
+  </main>  <footer class="footer">
+    <a href="quran.html">← Kembali ke Qur'an</a>
+  </footer>  <script>
+    const form = document.getElementById("formPengaturan");
+    const pengaturan = JSON.parse(localStorage.getItem("pengaturanTajwid")) || {};
+
+    for (const [key, val] of Object.entries(pengaturan)) {
+      if (form.elements[key]) form.elements[key].checked = val;
+    }
+
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const data = {};
+      Array.from(form.elements).forEach(el => {
+        if (el.name) data[el.name] = el.checked;
+      });
+      localStorage.setItem("pengaturanTajwid", JSON.stringify(data));
+      alert("Pengaturan berhasil disimpan!");
+    });
+  </script></body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Input Hadist</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-brand">📜 Input Hadist</div>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <nav class="nav-menu" id="navMenu">
+      <a href="index.html" class="active">🏠 Beranda</a>
+    <a href="quran.html">📖 Qur'an</a>
+    <a href="doa.html">🙏 Input Doa</a>
+    <a href="daftar-doa.html">📚 Daftar Doa</a>
+    <a href="hadist.html">📜 Input Hadist</a>
+    <a href="daftar-hadist.html">📚 Daftar Hadist</a>
+    <a href="sholat.html">🕓 Jadwal Sholat</a>
+    <a href="artikel.html">✍️ Input Artikel</a>
+    </nav>
+  </header>
+
+  <main class="content">
+    <div class="form-group">
+      <input type="text" id="judulHadist" placeholder="Judul Hadist">
+      <textarea id="isiHadist" placeholder="Isi hadist..."></textarea>
+      <input type="text" id="kategoriHadist" placeholder="Kategori (adab, shalat, dll)">
+      <button onclick="simpanHadist()">💾 Simpan Hadist</button>
+      <button onclick="resetForm()">↩️ Reset Form</button>
+    </div>
+    <hr>
+    <h3>📃 Daftar Hadist</h3>
+    <div id="daftarHadist" class="grid-thumbnail"></div>
+  </main>
+
+  <footer class="footer">
+    <a href="index.html">← Kembali ke Beranda</a>
+  </footer>
+
+  <script>
+    function simpanHadist() {
+      const judul = document.getElementById("judulHadist").value.trim();
+      const isi = document.getElementById("isiHadist").value.trim();
+      const kategori = document.getElementById("kategoriHadist").value.trim();
+
+      if (!judul || !isi || !kategori) {
+        alert("Mohon isi semua kolom!");
+        return;
+      }
+
+      const hadistBaru = { judul, isi, kategori };
+      const semuaHadist = JSON.parse(localStorage.getItem("hadist") || "[]");
+      semuaHadist.push(hadistBaru);
+      localStorage.setItem("hadist", JSON.stringify(semuaHadist));
+      tampilkanHadist();
+      resetForm();
+    }
+
+    function tampilkanHadist() {
+      const semuaHadist = JSON.parse(localStorage.getItem("hadist") || "[]");
+      const daftar = document.getElementById("daftarHadist");
+      daftar.innerHTML = "";
+
+      if (semuaHadist.length === 0) {
+        daftar.innerHTML = "<p>Belum ada hadist yang disimpan.</p>";
+        return;
+      }
+
+      semuaHadist.forEach((h) => {
+        const card = document.createElement("div");
+        card.className = "thumbnail-card";
+        card.innerHTML = `
+          <h4>${h.judul}</h4>
+          <p>${h.isi.replace(/\n/g, "<br>")}</p>
+          <small>Kategori: ${h.kategori}</small>
+        `;
+        daftar.appendChild(card);
+      });
+    }
+
+    function resetForm() {
+      document.getElementById("judulHadist").value = "";
+      document.getElementById("isiHadist").value = "";
+      document.getElementById("kategoriHadist").value = "";
+    }
+
+    function toggleMenu() {
+      document.getElementById("navMenu").classList.toggle("show");
+    }
+
+    document.addEventListener("DOMContentLoaded", tampilkanHadist);
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>

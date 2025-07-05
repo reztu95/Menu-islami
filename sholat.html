@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waktu Sholat & Arah Kiblat</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <h1>🕌 Waktu Sholat</h1>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </header>
+<nav class="nav-menu" id="navMenu">
+ <a href="index.html" class="active">🏠 Beranda</a>
+    <a href="quran.html">📖 Qur'an</a>
+    <a href="doa.html">🙏 Input Doa</a>
+    <a href="daftar-doa.html">📚 Daftar Doa</a>
+    <a href="hadist.html">📜 Input Hadist</a>
+    <a href="daftar-hadist.html">📚 Daftar Hadist</a>
+    <a href="sholat.html">🕓 Jadwal Sholat</a>
+    <a href="artikel.html">✍️ Input Artikel</a>
+</nav>
+  <main class="content">
+    <div class="form-group">
+      <p>Masukkan nama kota untuk melihat jadwal sholat</p>
+      <input type="text" id="kotaInput" placeholder="Contoh: Jakarta" class="input-kota" />
+      <button onclick="ambilJadwal()" class="button-utama">Tampilkan Jadwal</button>
+    </div>
+
+    <div id="jadwalContainer" class="jadwal-box"></div>
+
+    <section style="margin-top: 40px;">
+      <h2>🧭 Arah Kiblat</h2>
+      <p>Arah kiblat (perkiraan): <strong>295° dari Utara</strong></p>
+      <img src="assets/kiblat.png" alt="Arah Kiblat" class="kiblat-img" />
+    </section>
+  </main>
+
+  <footer class="footer">
+    <a href="index.html">← Kembali ke Beranda</a>
+  </footer>
+
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+    async function ambilJadwal() {
+      const input = document.getElementById("kotaInput");
+      const container = document.getElementById("jadwalContainer");
+      const kota = input.value.trim().toLowerCase();
+
+      if (!kota) {
+        alert("Silakan masukkan nama kota.");
+        return;
+      }
+
+      const hariIni = new Date();
+      const tgl = hariIni.getDate().toString().padStart(2, '0');
+      const bln = (hariIni.getMonth() + 1).toString().padStart(2, '0');
+      const thn = hariIni.getFullYear();
+
+      const url = `https://api.myquran.com/v1/sholat/jadwal/kota/${kota}/${thn}/${bln}/${tgl}`;
+
+      container.innerHTML = "<p>⏳ Mengambil data jadwal sholat...</p>";
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data || !data.data || !data.data.jadwal) {
+          throw new Error("Data tidak lengkap");
+        }
+
+        const lokasi = data.data.lokasi;
+        const jadwal = data.data.jadwal;
+
+        container.innerHTML = `
+          <div class="jadwal-result">
+            <h3>${lokasi}</h3>
+            <p><strong>Tanggal:</strong> ${jadwal.tanggal}</p>
+            <ul class="jadwal-list">
+              <li>🕓 Subuh: ${jadwal.subuh}</li>
+              <li>🕔 Dzuhur: ${jadwal.dzuhur}</li>
+              <li>🕞 Ashar: ${jadwal.ashar}</li>
+              <li>🌅 Maghrib: ${jadwal.maghrib}</li>
+              <li>🌃 Isya: ${jadwal.isya}</li>
+            </ul>
+          </div>
+        `;
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = `<p style="color:red;">⚠️ Gagal mengambil data. Periksa koneksi internet atau nama kota.</p>`;
+      }
+    }
+    function toggleMenu() {
+  document.getElementById("navMenu").classList.toggle("show");
+}
+  });
+</script>
+<script src="script.js"></script>
+</body>
+</html>

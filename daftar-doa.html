@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daftar Doa</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .grid-thumbnail {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      padding: 1rem;
+    }
+    .thumbnail-card {
+      background: #fff;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .judul-clickable {
+      cursor: pointer;
+      color: blue;
+      text-decoration: underline;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 90%;
+    }
+    .close {
+      float: right;
+      cursor: pointer;
+      font-size: 20px;
+    }
+    #modalIsi {
+      line-height: 1.6;
+      white-space: pre-wrap;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar-brand">📚 Daftar Doa</div>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    <nav class="nav-menu" id="navMenu">
+      <a href="index.html" class="active">🏠 Beranda</a>
+    <a href="quran.html">📖 Qur'an</a>
+    <a href="doa.html">🙏 Input Doa</a>
+    <a href="daftar-doa.html">📚 Daftar Doa</a>
+    <a href="hadist.html">📜 Input Hadist</a>
+    <a href="daftar-hadist.html">📚 Daftar Hadist</a>
+    <a href="sholat.html">🕓 Jadwal Sholat</a>
+    <a href="artikel.html">✍️ Input Artikel</a>
+    </nav>
+  </header>
+
+  <main class="content">
+    <div class="kategori-list">
+      <label for="kategoriSelect"><strong>📂 Pilih Kategori Doa:</strong></label>
+      <select id="kategoriSelect" onchange="filterKategori(this.value)">
+        <option value="">🔄 Semua Doa</option>
+        <option value="Doa Sehari-hari">Doa Sehari-hari</option>
+        <option value="Dzikir Pagi">Dzikir Pagi</option>
+        <option value="Dzikir Petang">Dzikir Petang</option>
+        <option value="Doa Lain-lain">Doa Lain-lain</option>
+      </select>
+    </div>
+
+    <!-- Tambahkan div ini agar thumbnail muncul -->
+    <div id="daftarDoaThumbnail" class="grid-thumbnail"></div>
+  </main>
+
+  <footer class="footer">
+    <a href="doa.html">← Kembali ke Tambah Doa</a>
+  </footer>
+
+  <!-- Modal -->
+  <div id="modalDoa" class="modal" onclick="if(event.target === this) tutupModal()">
+    <div class="modal-content">
+      <span class="close" onclick="tutupModal()">&times;</span>
+      <h3 id="modalJudul"></h3>
+      <div id="modalIsi"></div>
+      <small id="modalKategori"></small>
+    </div>
+  </div>
+
+  <script>
+    function tampilkanDoaThumbnail(filter = '') {
+      const semuaDoa = JSON.parse(localStorage.getItem("doa") || "[]");
+      const daftar = document.getElementById("daftarDoaThumbnail");
+      daftar.innerHTML = "";
+
+      const hasil = filter
+        ? semuaDoa.filter(d => d.kategori === filter)
+        : semuaDoa;
+
+      if (hasil.length === 0) {
+        daftar.innerHTML = "<p>Belum ada doa yang disimpan.</p>";
+        return;
+      }
+
+      hasil.forEach((d) => {
+        const card = document.createElement("div");
+        card.className = "thumbnail-card";
+
+        const dataJudul = encodeURIComponent(d.judul || "");
+        const dataIsi = encodeURIComponent(d.isi || "");
+        const dataKategori = encodeURIComponent(d.kategori || "");
+
+        card.innerHTML = `
+          <h4 class="judul-clickable"
+              data-judul="${dataJudul}"
+              data-isi="${dataIsi}"
+              data-kategori="${dataKategori}">
+            ${d.judul}
+          </h4>
+          <p><strong>Kategori:</strong> ${d.kategori}</p>
+        `;
+        daftar.appendChild(card);
+      });
+    }
+
+    // Buka modal saat klik judul
+    document.addEventListener("click", function(e) {
+      if (e.target.classList.contains("judul-clickable")) {
+        const judul = decodeURIComponent(e.target.getAttribute("data-judul"));
+        const isi = decodeURIComponent(e.target.getAttribute("data-isi"));
+        const kategori = decodeURIComponent(e.target.getAttribute("data-kategori"));
+
+        document.getElementById("modalJudul").textContent = judul;
+        document.getElementById("modalIsi").innerHTML = isi.replace(/\n/g, "<br>");
+        document.getElementById("modalKategori").textContent = `Kategori: ${kategori}`;
+        document.getElementById("modalDoa").style.display = "flex";
+      }
+    });
+
+    function tutupModal() {
+      document.getElementById("modalDoa").style.display = "none";
+    }
+
+    function filterKategori(kategori) {
+      tampilkanDoaThumbnail(kategori);
+    }
+
+    function toggleMenu() {
+      document.getElementById("navMenu").classList.toggle("show");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      tampilkanDoaThumbnail();
+    });
+  </script>
+</body>
+</html>
