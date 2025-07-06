@@ -1,115 +1,104 @@
-// ==================== VARIABEL GLOBAL ====================
-let editIndex = null;
-let editIndexArtikel = null;
-let kota = "Jakarta";
-let tanggal = new Date().toISOString().slice(0, 10);
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waktu Sholat & Arah Kiblat</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="navbar">
+    <h1>🕌 Waktu Sholat</h1>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+  </header>
 
-// ==================== FORMAT ISI ====================
-function formatIsiDoa(teks) {
-  return teks
-    .replace(/LATIN:/gi, '<strong>Latin:</strong><br>')
-    .replace(/ARTINYA:/gi, '<br><strong>Artinya:</strong><br>')
-    .replace(/KEUTAMAAN:/gi, '<br><strong>Keutamaan:</strong><br>')
-    .replace(/\n/g, '<br>');
-}
+  <nav class="nav-menu" id="navMenu">
+    <a href="index.html" class="active">🏠 Beranda</a>
+    <a href="quran.html">📖 Qur'an</a>
+    <a href="doa.html">🙏 Input Doa</a>
+    <a href="daftar-doa.html">📚 Daftar Doa</a>
+    <a href="hadist.html">📜 Input Hadist</a>
+    <a href="daftar-hadist.html">📚 Daftar Hadist</a>
+    <a href="sholat.html">🕓 Jadwal Sholat</a>
+    <a href="artikel.html">✍️ Input Artikel</a>
+  </nav>
 
-function formatIsiHadist(teks) {
-  return teks
-    .replace(/DARI:/gi, '<strong>Dari:</strong><br>')
-    .replace(/MATAN:/gi, '<br><strong>Matan:</strong><br>')
-    .replace(/ARTINYA:/gi, '<br><strong>Artinya:</strong><br>')
-    .replace(/SANAD:/gi, '<br><strong>Sanad:</strong><br>')
-    .replace(/KEDUDUKAN HADITS:/gi, '<br><strong>Kedudukan Hadits:</strong><br>')
-    .replace(/\n/g, '<br>');
-}
+  <main class="content">
+    <div class="form-group">
+      <p>Masukkan nama kota untuk melihat jadwal sholat</p>
+      <input type="text" id="kotaInput" placeholder="Contoh: Jakarta" class="input-kota" />
+      <button onclick="ambilJadwal()" class="button-utama">Tampilkan Jadwal</button>
+    </div>
 
-function formatIsiArtikel(teks) {
-  return teks.replace(/\n/g, "<br>");
-}
+    <div id="jadwalContainer" class="jadwal-box"></div>
 
-// ==================== DOA ====================
-function tampilkanDoaThumbnail(filter = '') {
-  const semuaDoa = JSON.parse(localStorage.getItem("doa") || "[]");
-  const daftar = document.getElementById("daftarDoaThumbnail");
-  if (!daftar) return;
+    <section style="margin-top: 40px;">
+      <h2>🧭 Arah Kiblat</h2>
+      <p>Arah kiblat (perkiraan): <strong>295° dari Utara</strong></p>
+      <img src="assets/kiblat.png" alt="Arah Kiblat" class="kiblat-img" />
+    </section>
+  </main>
 
-  daftar.innerHTML = "";
+  <footer class="footer">
+    <a href="index.html">← Kembali ke Beranda</a>
+  </footer>
 
-  const hasil = filter
-    ? semuaDoa.filter(d => d.kategori.toLowerCase() === filter.toLowerCase())
-    : semuaDoa;
+  <!-- Script utama -->
+  <script>
+    async function ambilJadwal() {
+      const input = document.getElementById("kotaInput");
+      const container = document.getElementById("jadwalContainer");
+      const kota = input.value.trim().toLowerCase();
 
-  if (hasil.length === 0) {
-    daftar.innerHTML = "<p>Belum ada doa yang disimpan.</p>";
-    return;
-  }
+      if (!kota) {
+        alert("Silakan masukkan nama kota.");
+        return;
+      }
 
-  hasil.forEach(d => {
-    const card = document.createElement("div");
-    card.className = "thumbnail-card";
+      const hariIni = new Date();
+      const tgl = hariIni.getDate().toString().padStart(2, '0');
+      const bln = (hariIni.getMonth() + 1).toString().padStart(2, '0');
+      const thn = hariIni.getFullYear();
 
-    card.innerHTML = `
-      <h4 class="judul-doa" style="color:#0645AD; text-decoration: underline; cursor: pointer;">${d.judul}</h4>
-      <p>${d.isi.length > 100 ? d.isi.substring(0, 100) + "..." : d.isi}</p>
-      <p><strong>Kategori:</strong> ${d.kategori}</p>
-    `;
+      const url = `https://api.myquran.com/v1/sholat/jadwal/kota/${kota}/${thn}/${bln}/${tgl}`;
 
-    card.querySelector(".judul-doa").addEventListener("click", () => {
-      document.getElementById("modalJudul").textContent = d.judul;
-      document.getElementById("modalIsi").innerHTML = formatIsiDoa(d.isi);
-      document.getElementById("modalKategori").textContent = `Kategori: ${d.kategori}`;
-      document.getElementById("modalDoa").style.display = "flex";
-    });
+      container.innerHTML = "<p>⏳ Mengambil data jadwal sholat...</p>";
 
-    daftar.appendChild(card);
-  });
-}
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
 
-function bukaModalDoa(dataStr) {
-  const data = JSON.parse(decodeURIComponent(dataStr));
-  document.getElementById("modalJudul").textContent = data.judul;
-  document.getElementById("modalIsi").innerHTML = formatIsiDoa(data.isi);
-  document.getElementById("modalKategori").textContent = `Kategori: ${data.kategori}`;
-  document.getElementById("modalDoa").style.display = "flex";
-}
+        if (!data || !data.data || !data.data.jadwal) {
+          throw new Error("Data tidak lengkap");
+        }
 
-function tutupModalDoa() {
-  document.getElementById("modalDoa").style.display = "none";
-}
+        const lokasi = data.data.lokasi;
+        const jadwal = data.data.jadwal;
 
-// ==================== HADIST ====================
-function simpanHadist() {
-  const judul = document.getElementById("judulHadist")?.value.trim();
-  const isi = document.getElementById("isiHadist")?.value.trim();
-  const kategori = document.getElementById("kategoriHadist")?.value.trim();
-  if (!judul || !isi || !kategori) return alert("Semua kolom wajib diisi!");
+        container.innerHTML = `
+          <div class="jadwal-result">
+            <h3>${lokasi}</h3>
+            <p><strong>Tanggal:</strong> ${jadwal.tanggal}</p>
+            <ul class="jadwal-list">
+              <li>🕓 Subuh: ${jadwal.subuh}</li>
+              <li>🕔 Dzuhur: ${jadwal.dzuhur}</li>
+              <li>🕞 Ashar: ${jadwal.ashar}</li>
+              <li>🌅 Maghrib: ${jadwal.maghrib}</li>
+              <li>🌃 Isya: ${jadwal.isya}</li>
+            </ul>
+          </div>
+        `;
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = `<p style="color:red;">⚠️ Gagal mengambil data. Periksa koneksi internet atau nama kota.</p>`;
+      }
+    }
 
-  let data = JSON.parse(localStorage.getItem("hadist") || "[]");
-  if (editIndex !== null) {
-    data[editIndex] = { judul, isi, kategori };
-    editIndex = null;
-  } else {
-    data.push({ judul, isi, kategori });
-  }
-  localStorage.setItem("hadist", JSON.stringify(data));
-  resetForm();
-  tampilkanHadist();
-}
+    function toggleMenu() {
+      document.getElementById("navMenu").classList.toggle("show");
+    }
+  </script>
 
-function tampilkanHadist() {
-  const daftar = document.getElementById("daftarHadist");
-  if (!daftar) return;
-
-  const data = JSON.parse(localStorage.getItem("hadist") || "[]");
-  daftar.innerHTML = "";
-  if (data.length === 0) {
-    daftar.innerHTML = "<p>Belum ada hadist.</p>";
-    return;
-  }
-
-  const isDaftarPage = window.location.pathname.includes("daftar-hadist");
-
-  data.forEach((h, i) => {
-    const card = document.createElement("div");
-    card.className = "thumbnail-card";
-    const ringkasan = h.isi.length > 100 ? h.isi.substring(0, 100) + "...
+  <script src="script.js"></script>
+</body>
+    </html>
